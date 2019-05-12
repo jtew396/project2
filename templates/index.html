@@ -3,18 +3,78 @@
 <html>
     <head>
         <!-- The app's own CSS -->
-        <link href="/static/styles.css" rel="stylesheet"/>
+        <link href="/static/index.css" rel="stylesheet"/>
         <!-- The app's own JavaScript -->
-        <script src="/static/scripts.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+        <script src="{{ url_for('static', filename='index.js') }}"></script>
+        <!-- <script src="/static/scripts.js"></script> -->
         <!-- The app's title -->
         <title>Flack</title>
     </head>
     <body>
-        <form id="form">
-            <input id="currency" autocomplete="off" autofocus placeholder="Currency" type="text">
-            <input type="submit" value="Get Exchange Rate">
-        </form>
-        <br>
-        <div id="result"></div>
+        <nav>
+            <!-- Chat app name. -->
+            <a href="/">Flack</a>
+        </nav>
+        <!-- Prompt the user to provide a display name. -->
+        <!-- Make sure to hide if user is already logged in. -->
+        <div class="registration">
+            <div class="registration-content">
+                <div class="registration-body">
+                    <p>Please provide a display name:</p>
+                    <form id="new-user">
+                        <input type="text" name"username" autocomplete="off" autofocus maxlength="12" pattern="[A-Za-z0-9]+" id="username" title="Maximum of 12 Alphanumeric Characters." required>
+                        <input type="submit" name="go" value="Enter" id="submit-id">
+                        <br>
+                        <span>That Display Name is Taken!</span>
+                </div>
+            </div>
+        </div>
+        <!-- Outermost frame of the chat app. -->
+        <div id="frame">
+            <!-- Sidepanel containing list of channels. -->
+            <div id="sidepanel">
+                <!-- Display name of the user. -->
+                <div id="profile">
+                    <div class="wrap">
+                        <p>Display Name</p>
+                    </div>
+                </div>
+                <!-- Search function for the channels -->
+                <div id="channel-search">
+                    <input type="text" placeholder="Search channels..." />
+                    <button class="submit">Search</button>
+                </div>
+                <!-- List of channels. -->
+                <div id="channels-content">
+                    <!-- Ordered list of channels. -->
+                    <ul id ="channels">
+                    </ul>
+                </div>
+                <div id="channel-create">
+                    <input id="new-channel" type="text" placeholder="Create a Channel." />
+                    <button id="create-channel" class="submit">Create Channel</button>
+                </div>
+            </div>
+            <!-- Chat messages frame. -->
+            <div class="content">
+                <!-- Header for chat containing the current channel name. -->
+                <div class="channel">
+                </div>
+                <!-- Chat messages within the current channel. -->
+                <div class="messages">
+                    <ul>
+                        <!-- Loop through messages in chat. -->
+                        <li class="sent">Sent Message 1</li>
+                        <li class="replies">Reply Message 1</li>
+                    </ul>
+                </div>
+                <!-- Input field for sending a message to the channel chat. -->
+                <div class="message-input">
+                    <input type="text" placeholder="Write your message..." />
+                    <button class="submit">Send</button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
