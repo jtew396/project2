@@ -14,11 +14,52 @@
 
         <script>
             // So I think that because there's a bug with Flask and Socket.IO, that I cannot link a JS file in a seperate folder.
-            //  Once the DOM is loaded, run the following function
+
+            // Template for creating a channel
+            // const template = Handlebars.compile("<li>New Channel</li>");
+
+            // Storing a list of channels
+            const channels = []
+
+            // Storing a list of users
+            const users = []
+
+            // Once the DOM is loaded, run the following function
             document.addEventListener('DOMContentLoaded', () => {
 
                 // Hide the inner HTML of the frame before loggin the user in
                 document.querySelector('#frame').style.visibility = 'hidden';
+
+                // This is adapted from the currency app, needs to be adjusted for register & login
+                document.querySelector('#new-user').onsubmit = () => {
+
+                    // Initialize new request
+                    const request = new XMLHttpRequest();
+                    const username = document.querySelector('#username-create').value;
+                    console.log(username);
+                    request.open('POST', '/register');
+                    // console.log("Past the request.");
+                    // Callback function for when request completes
+                    request.onload = () => {
+                        console.log("Onload of the request.")
+                        // Extract JSON data from requests
+                        const data = JSON.parse(request.responseText);
+                        console.log(data);
+
+                        // Update the webpage
+                        if (data.success) {
+                            const contents = `Hello ${data.username}!`;
+                            document.querySelector('#introduction').style.visibility = 'hidden';
+                            document.querySelector('#frame').style.visibility = 'visible';
+                            document.querySelector('#result').innerHTML = contents;
+                        }
+                        else {
+                            document.querySelector('#result').innerHTML = 'Username already exists.';
+                        }
+                    };
+
+                };
+
             });
         </script>
 
@@ -40,23 +81,27 @@
         <!-- Make sure to hide if user is already logged in. -->
 
         <main class="container p-5">
-            <div class="container col-sm-6 text-center">
-                <h1>Welcome to <span class="purple">Flack</span>!</h1>
+            <div id="introduction">
+                <div class="container col-sm-6 text-center">
+                    <h1>Welcome to <span class="purple">Flack</span>!</h1>
+                </div>
+                <div class="container col-sm-4 text-center">
+                    <h6>Create a Display Name.</h6>
+                </div>
+                <div class="container p-3">
+                </div>
+                <div id="registration" class="container col-sm-4">
+                        <div class="registration-body" align="center">
+                            <form id="new-user">
+                                <div class="form-group">
+                                    <input style="" class="form-control" id="username-create" autocomplete="off" autofocus placeholder="Display Name" type="text">
+                                </div>
+                                <button class="btn btn-primary" type="submit">Enter</button>
+                            </form>
+                        </div>
+                </div>
             </div>
-            <div class="container col-sm-4 text-center">
-                <h6>Create a Display Name.</h6>
-            </div>
-            <div class="container p-3">
-            </div>
-            <div id="registration" class="container col-sm-4">
-                    <div class="registration-body" align="center">
-                        <form id="new-user">
-                            <div class="form-group">
-                                <input style="" class="form-control" id="username-create" autocomplete="off" autofocus placeholder="Display Name" type="text">
-                            </div>
-                            <button class="btn btn-primary" type="submit">Enter</button>
-                        </form>
-                    </div>
+            <div id="result">
             </div>
             <!-- Outermost frame of the chat app. -->
             <div class="container row" id="frame">

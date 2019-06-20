@@ -11,11 +11,12 @@ socketio = SocketIO(app)
 
 @app.route("/")
 def index():
+    print("We made it to index.")
     return render_template("index.html")
 
 @app.route("/register", methods=["POST"])
 def register():
-
+    print("We made it to register...")
     # Query for the username
     username = request.form.get("username-create")
     print(username)
@@ -24,14 +25,7 @@ def register():
     if not username:
         return jsonify({"success": False})
 
-
-
-# @app.route("/login", methods=["POST"])
-# def register():
-
-#    return jsonify({"success": True, "username": username})
-
-
+    return jsonify({"success": True, "username": username})
 
 
 if __name__ == '__main__':
