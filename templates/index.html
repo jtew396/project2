@@ -31,8 +31,8 @@
         <!-- Prompt the user to provide a display name. -->
         <!-- Make sure to hide if user is already logged in. -->
 
-        <main class="container p-5">
-            <div id="introduction">
+        <main class="container">
+            <div id="introduction" class="p-5">
                 <div class="container col-sm-6 text-center">
                     <h1>Welcome to <span id="site_name">Flack</span>!</h1>
                 </div>
@@ -43,60 +43,86 @@
                 </div>
                 <div id="registration" class="container col-sm-4">
                         <div class="registration-body" align="center">
-                            <form id="new-user">
+                            <div>
+                                <div class="form-group">
+                                    <input style="" class="form-control" id="username-create" autocomplete="off" autofocus placeholder="Display Name" type="text">
+                                </div>
+                                <button id="new-user" class="btn btn-primary" type="submit">Submit</button>
+                            </div>
+                            <!-- <form id="new-user">
                                 <div class="form-group">
                                     <input style="" class="form-control" id="username-create" autocomplete="off" autofocus placeholder="Display Name" type="text">
                                 </div>
                                 <button class="btn btn-primary" type="submit">Submit</button>
                             </form>
+                            -->
                         </div>
                 </div>
             </div>
-            <div id="result">
-            </div>
-            <!-- Outermost frame of the chat app. -->
-            <div class="container row" id="frame">
-                <!-- Sidepanel containing list of channels. -->
-                <div class="col" id="sidepanel">
-                    <!-- Display name of the user. -->
-                    <div id="profile">
-                        <div class="wrap">
-                            <p>Display Name</p>
+            <div id="frame" class="p-3">
+                <div class="row">
+                    <div class="col col-3">
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <h5 class="card-title">Groups</h5>
+                            </div>
+                            <div class="card-body">
+                                This is the body.
+                            </div>
+                            <div class="card-footer">
+                                <div class="form-group">
+                                    <label for="inputlg"><b>Create Group</b></label>
+                                    <div class="row">
+                                        <div class="col-9 pr-0">
+                                            <input class="form-control input" id="input" type="text">
+                                        </div>
+                                        <div class="col px-1">
+                                            <button id="create-group" class="btn btn-success" type="submit">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!-- Search function for the channels -->
-                    <div id="channel-search">
-                        <input type="text" placeholder="Search channels..." />
-                        <button id="" class="submit">Search</button>
+                    <div class="col col-6">
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <h3>Chat Group Name</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="float-left pt-1">
+                                    <b>Display Name 1</b>
+                                    <p>This is where your sent message content will be.</p>
+                                </div>
+                                <div class="float-left pt-1">
+                                    <b>Display Name 2</b>
+                                    <p>This is where your sent message content will be.</p>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="form-group">
+                                    <label for="inputlg">Send message:</label>
+                                    <div class="row">
+                                        <div class="col-9">
+                                            <input class="form-control input-lg" id="inputlg" type="text">
+                                        </div>
+                                        <div class="col-1">
+                                            <button id="message-send" class="btn btn-success" type="submit">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <!-- List of channels. -->
-                    <div id="channels-content">
-                        <!-- Ordered list of channels. -->
-                        <ul id ="channels">
-                        </ul>
-                    </div>
-                    <div id="channel-create">
-                        <input id="new-channel" type="text" placeholder="Create a Channel." />
-                        <button id="create-channel" class="submit">Create Channel</button>
-                    </div>
-                </div>
-                <!-- Chat messages frame. -->
-                <div class="col content">
-                    <!-- Header for chat containing the current channel name. -->
-                    <div class="channel">
-                    </div>
-                    <!-- Chat messages within the current channel. -->
-                    <div class="messages">
-                        <ul>
-                            <!-- Loop through messages in chat. -->
-                            <li class="sent">Sent Message 1</li>
-                            <li class="replies">Reply Message 1</li>
-                        </ul>
-                    </div>
-                    <!-- Input field for sending a message to the channel chat. -->
-                    <div class="message-input">
-                        <input type="text" placeholder="Write your message..." />
-                        <button class="submit">Send</button>
+                    <div class="col col-3">
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <h5 class="card-title">Members</h5>
+                            </div>
+                            <div class="card-body">
+                                This is where a list of members will populate.
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

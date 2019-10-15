@@ -7,47 +7,31 @@ const channels = []
 // Storing a list of users
 const users = []
 
-// Storing the user's display name as username
-//const username = []
-
 // Once the DOM is loaded, run the following function
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Hide the inner HTML of the frame before loggin the user in
+    // Hide the inner HTML of the frame before logging the user in
     document.querySelector('#frame').style.visibility = 'hidden';
 
-    // This is adapted from the currency app, needs to be adjusted for register & login
-    document.querySelector('#new-user').onsubmit = () => {
+    // Connect to web socket
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
-        // Initialize new request
-        //const request = new XMLHttpRequest();
-        const username = document.querySelector('#username-create').value;
-        document.querySelector('#frame').style.visibility = 'visible';
-        document.querySelector('#introduction').style.visibility = 'hidden';
-        //console.log(username);
-        //request.open('POST', '/register');
-        //console.log("Past the request.");
-        // Callback function for when request completes
-        /*
-        request.onload = () => {
-            console.log("Onload of the request.")
-            // Extract JSON data from requests
-            const data = JSON.parse(request.responseText);
-            console.log(data);
+    // Once the web socket is established
+    socket.on('connect', () => {
 
-            // Update the webpage
-            if (data.success) {
-                const contents = `Hello ${data.username}!`;
-                document.querySelector('#introduction').style.visibility = 'hidden';
-                document.querySelector('#frame').style.visibility = 'visible';
-                document.querySelector('#result').innerHTML = contents;
-            }
-            else {
-                document.querySelector('#result').innerHTML = 'Username already exists.';
-            }
+        // Listen for the user to submit a display name
+        document.querySelector('#new-user').onclick = () => {
+
+            // Store the display name as username
+            const username = document.querySelector('#username-create').value;
+
+            // Hide the welcome page and display name input
+            document.querySelector('#introduction').innerHTML = "";
+            document.querySelector('#introduction').classList.remove('p-5');
+
+            // Display the available chat rooms and users
+            document.querySelector('#frame').style.visibility = 'visible';
+
         };
-        */
-
-    };
-
+    });
 });
