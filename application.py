@@ -27,6 +27,10 @@ def register():
 
     return jsonify({"success": True, "username": username})
 
+# @socketio.on("send message")
+# def message(data)
+#     selection = data["selection"]
+#     emit("message", {"message": message}, broadcast=True)
 
 if __name__ == '__main__':
     socketio.run(app)

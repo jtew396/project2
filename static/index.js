@@ -33,5 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('#frame').style.visibility = 'visible';
 
         };
+
+        document.querySelector('#message-send').onclick = () => {
+
+            
+        };
     });
 });
