@@ -29,14 +29,20 @@ nav .navbar-brand .purple
 main .form-control
 {
     /* center form controls */
-    display: inline-block;
+    /* display: inline-block; */
 
     /* override Bootstrap's 100% width for form controls */
-    width: auto;
+    /* width: auto; */
 }
 
 main
 {
+    /* top and bottom padding */
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-top: auto;
+    margin-bottom: auto;
+
     /* scroll horizontally as needed */
     overflow-x: auto;
 
@@ -52,6 +58,15 @@ main
 #site_name
 {
     color: #7A43B6;
+}
+
+#channels, #channel
+{
+    height: 80vh;
+}
+#channel_list_item
+{
+
 }
 
 /* This is a new CSS file. */

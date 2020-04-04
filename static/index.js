@@ -15,27 +15,37 @@ $(document).ready(function() {
 
 	var socket = io.connect('http://127.0.0.1:5000');
 
-	$('#create_display_name').on('click', function() {
-		$.post("/", {
-			display_name: $('#display_name').val('')
-		});
-		console.log('Display Name Created');
-	});
-	$('#display_name').on('keypress', function(e) {
-		if(e.which == 13) {
-			$.post("/", {
-				display_name: $('#display_name').val('')
-			});
-			console.log('Display Name Created');
-		}
-	});
-
 	socket.on('connect', function() {
 		socket.send('User has connected!');
 	});
 
+	// Have a new user create a display name
+	socket.on('my response', function(user_data) {
+		console.log(user_data);
+		$("#user").append('<li>'+user_data["display_name"]+' has joined Flack.</li>');
+		console.log('User has joined Flack.');
+	});
+
+	$('#create_display_name').on('click', function() {
+		console.log('So you clicked the button.')
+		socket.emit( 'my event', {
+			"display_name": $('#display_name').val()
+		} )
+		console.log($('#display_name').val(''));
+	});
+
+	$('#display_name').on('keypress', function(e) {
+		console.log('So you pressed enter.')
+		if(e.which == 13) {
+			socket.emit( 'my event', {
+				"display_name": $('#display_name').val()
+			} )
+			$('#display_name').val('');
+        }
+	});
+
 	socket.on('message', function(msg) {
-		$("#messages").append('<li>'+msg+'</li>');
+		$("#messages").append('<div class=\"alert alert-primary\" id=\"messageBox\"><div class=\"row\"><div class=\"float-left\"><span class=\"font-weight-bold\">user</span> - 12:23 PM</div></div><div class=\"row\" id=\"message\">' + msg + '</div></div>');
 		console.log('Received message');
 	});
 
@@ -43,12 +53,19 @@ $(document).ready(function() {
 		socket.send($('#myMessage').val());
 		$('#myMessage').val('');
 	});
+
     $('#myMessage').on('keypress', function(e) {
         if(e.which == 13) {
             socket.send($('#myMessage').val());
     		$('#myMessage').val('');
         }
     });
+
+	$('#joinChannelButton').on('click', function() {
+		var room = $(this).val();
+		console.log(room);
+		//socket.join(room);
+	});
 
 });
 
