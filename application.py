@@ -1,49 +1,23 @@
 import os
 
 from flask import Flask, jsonify, render_template, request, session
-<<<<<<< HEAD
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
-=======
-from flask_login import login_user, current_user, LoginManager
-from flask_socketio import SocketIO, send, emit, join_room, leave_room
-from helpers import authenticated_only
-from models import User
->>>>>>> master
+from helpers import login_required
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(24)
 socketio = SocketIO(app)
-<<<<<<< HEAD
 
 @app.route("/", methods=["GET", "POST"])
+@login_required
 def index():
     return render_template("index.html")
-=======
 
-# Flask Login Manager
-login_manager = LoginManager()
-login_manager.init_app(app)
+@app.route("/login", methods=["GET", "POST"])
+def login():
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if current_user.is_authenticated:
-        print(user + ' is already logged in.')
-        return render_template("index.html")
-    else:
-        user = User()
-        login_user(user)
-
-        print(user)
-        print(current_user)
-        print(user.is_authenticated)
-
-        return render_template("index.html")
-
-@socketio.on('connect')
+@socketio.on('connect')a
 def connect_handler():
     if current_user.is_authenticated:
         emit('my response',
@@ -51,7 +25,6 @@ def connect_handler():
             broadcast=True)
     else:
         return False
->>>>>>> master
 
 @socketio.on('message')
 def handleMessage(msg):

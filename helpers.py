@@ -1,19 +1,14 @@
-import functools
-from flask import request
-from flask_login import current_user
-from flask_socketio import disconnect, emit
+from flask import redirect, render_template, request, session
+from functools import wraps
 
-def authenticated_only(f):
-    @functools.wraps(f)
-    def wrapped(*args, **kwargs):
-        if not current_user.is_authenticated:
-            disconnect()
-        else:
-            return f(*args, **kwargs)
-    return wrapped
-
-# @socketio.on('my event')
-# @authenticated_only
-# def handle_my_custom_event(data):
-#     emit('my response', {'message': '{0} has joined'.format(current_user.name)},
-#          broadcast=True)
+def login_required(f):
+    """
+    Decorate routes to require login.
+    http://flask.pocoo.org/docs/0.12/patterns/viewdecorators/
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("user_id") is None:
+            return redirect("/login")
+        return f(*args, **kwargs)
+    return decorated_function
