@@ -1,14 +1,40 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Log In
+    Create a Display Name
 {% endblock %}
 
 {% block main %}
-    <form action="/login" method="post">
-        <div class="form-group">
-            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text"/>
+    <br>
+    <br>
+    <div>
+        <h1>Welcome to Flack!</h1>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">Please create a display name to start chatting.</div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <form action="/login" method="post">
+                <div class="form-group">
+                    <input autocomplete="off" autofocus class="form-control" name="displayname" placeholder="Display Name" type="text" style="text-align:center;"/>
+                </div>
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </form>
         </div>
-        <button class="btn btn-primary" type="submit">Log In</button>
-    </form>
+        <div class="col"></div>
+    </div>
+    <div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <h5>{{ message }}</h5>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
 {% endblock %}

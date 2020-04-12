@@ -1,39 +1,24 @@
-<<<<<<< HEAD
-<!DOCTYPE htmll>
-
-<html lang="en">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" rel="stylesheet"/>
-        <link href="/static/index.css" rel="stylesheet" type="text/css"/>
-
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="{{ url_for('static', filename='index.js') }}"></script>
-
-        <!-- The code below is what I think is broken with the Flask-SocketIO bug. All JS will be above in the script tag. -->
-        <!-- <script src="{{ url_for('static', filename='index.js') }}"></script> -->
-        <!-- <script src="/static/scripts.js"></script> -->
-        <!-- The app's title -->
-        <title>Flack</title>
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-md navbar-light bg-light border">
-            <!-- Chat app name. -->
-            <a class="navbar-brand" href="/"><span class="purple">Flack</span></a>
-            <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbar">
-            </div>
-        </nav>
-        <main class="container">
-        </main>
-    </body>
-</html>
-=======
 {% extends "layout.html" %}
->>>>>>> master
+
+{% block main %}
+    <br>
+    <br>
+    <div>
+        <h1>Welcome to Flack!</h1>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            Join a channel and start chatting!
+            <div class="row">
+                <div class="col"></div>
+                <div class="col">
+                    <a href="/channels" class="list-group-item list-group-item-action active text-white" id="channels_header">Channels</a>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+{% endblock %}
