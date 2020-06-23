@@ -9,13 +9,13 @@
                 <a class="list-group-item list-group-item-action active text-white" id="channels_header">Flack Channels</a>
                 <form action="/chat" method="post">
                     <div class="form-group">
-                        <select class="form-control" id="join_channel">
+                        <select class="form-control" name="join_channel" id="join_channel">
                             {% for flack_channel in flack_channels %}
-                                <!-- <a id="join_channel" data="{{ flack_channel }}" href="/channel/{{ flack_channel }}" class="list-group-item list-group-item-action">{{ flack_channel }}</a> -->
-                                <!-- <input type="submit" id="join_channel" data="{{ flack_channel }}" class="list-group-item list-group-item-action" /> -->
+                                <option>{{ flack_channel }}</option>
                             {% endfor %}
                         </select>
                     </div>
+                    <button class="btn btn-primary" type="submit">Enter</button>
                 </form>
             </div>
         </div>

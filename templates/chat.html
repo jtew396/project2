@@ -1,30 +1,48 @@
 {% extends "layout.html" %}
 
+{% block title %}
+    Channel
+{% endblock %}
+
 {% block main %}
     <br>
     <div class="row">
-        <div class="col"></div>
         <div class="col">
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action active text-white" id="channels_header">Flack Channels</a>
-                {% for flack_channel in flack_channels %}
-                    <a id="join_channel" value="{{ flack_channel }}" href="/chat" class="list-group-item list-group-item-action">{{ flack_channel }}</a>
-                {% endfor %}
+            <div class="card" id="channel" style="">
+                <div class="card-header" id="channel_header">
+                    <h3 class="text-white">{{ flack_channel }}</h3>
+                </div>
+                <div class="card-body overflow-auto" id="">
+                    <div id="messages">
+                        {% for message in channel_messages %}
+                            <div class="alert alert-primary" id="messageBox">
+                                <div class="row">
+                                    <div class="float-left">
+                                        <span class="font-weight-bold">{{message["user_id"] }}</span>{{ message["timestamp"] }}
+                                    </div>
+                                </div>
+                                <div class="row" id="message">
+                                    {{ message["msg"] }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" class="form-control" id="myMessage">
+                                </div>
+                                <div class="col-1">
+                                    <button class="btn btn-primary" id="sendbutton">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col"></div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col"></div>
-        <div class="col">
-            <form action="/channels" method="post">
-                <div class="form-group">
-                    <input autocomplete="off" class="form-control" name="channelname" placeholder="Create a new channel." type="text"/>
-                </div>
-                <button class="btn btn-primary" type="submit">Submit</button>
-            </form>
-        </div>
-        <div class="col"></div>
     </div>
 {% endblock %}

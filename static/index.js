@@ -7,26 +7,35 @@ $(document).ready(function() {
 		// 	console.log("We're trying to join the " + channel_name + " channel.");
 		// 	socket.emit('join', {'room': channel_name});
 		// });
-		socket.on('send_message', function(data) {
+		chat.on('send_message', function(data) {
+			console.log(data);
 			console.log('The user: ' + data['user_id']);
 			console.log('The message: ' + data['msg']);
 			$("#messages").append('<div class=\"alert alert-primary\" id=\"messageBox\"><div class=\"row\"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data['user_id'] + '</span> - 12:23 PM</div></div><div class=\"row\" id=\"message\">' + data['msg'] + '</div></div>');
 			console.log('Received message');
 		});
 
-		socket.on('json', function(data) {
-			console.log('The user: ' + data['user_id']);
-			console.log('The message: ' + data['msg']);
-			$("#messages").append('<div class=\"alert alert-primary\" id=\"messageBox\"><div class=\"row\"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data['user_id'] + '</span> - 12:23 PM</div></div><div class=\"row\" id=\"message\">' + data['msg'] + '</div></div>');
+		chat.on('json', function(data) {
+			json = JSON.parse(data)
+			console.log('The user: ' + json["user_id"]);
+			console.log('The message: ' + json["msg"]);
+			$("#messages").append('<div class=\"alert alert-primary\" id=\"messageBox\"><div class=\"row\"><div class=\"float-left\"><span class=\"font-weight-bold\">' + json.user_id + '</span> - ' + json.timestamp + '</div></div><div class=\"row\" id=\"message\">' + json.msg + '</div></div>');
 			console.log('Received message');
 		})
 
 		$('#sendbutton').on('click', function() {
 			console.log('We are trying to send a message and you pressed the button.');
 			console.log($('#myMessage').val());
-			socket.emit('send_message', $('#myMessage').val());
+			chat.emit('send_message', $('#myMessage').val());
 			$('#myMessage').val('');
 		});
+
+		$('#myMessage').on('keypress', function(e) {
+			if(e.which == 13 && $('#myMessage').val() != '') {
+				chat.emit('send_message', $('#myMessage').val());
+				$('#myMessage').val('');
+			};
+		})
 
 		// socket.send('User has connected!');
 

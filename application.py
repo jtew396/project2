@@ -10,6 +10,7 @@ socketio = SocketIO(app)
 
 users = []
 flack_channels = ['Main']
+channel_messages = {'Main': []}
 
 @app.route('/', methods=["GET", "POST"])
 @login_required
@@ -83,25 +84,26 @@ def channels():
         return render_template("channels.html", flack_channels=flack_channels)
 
 @app.route('/chat', methods=["GET", "POST"])
+@login_required
 def chat():
     if request.method == "GET":
-        return render_template("channels.html", flack_channels=flack_channels)
+        channel_name = session['room']
+        return render_template("chat.html", flack_channel=channel_name)
     else:
         # Check if a channel name was provided
-        if not request.form.get("channelname"):
+        if not request.form.get("join_channel"):
             print('Must provide a channel name.')
             return redirect(url_for('channels'))
 
-        channel_name = request.form.get("channelname")
+        channel_name = request.form.get("join_channel")
 
         # Check if the channel exists in the flack channels
         if channel_name not in flack_channels:
             return redirect(url_for('channels'))
 
         # Make the channel the new room
-        session['room'] = request.form.get("channelname")
-
-        return render_template("chat.html", flack_channel=channel_name)
+        session['room'] = request.form.get("join_channel")
+        return render_template("chat.html", flack_channel=channel_name, channel_messages=channel_messages[channel_name])
 
 @socketio.on('send_message', namespace='/chat')
 def handleMessage(msg):
@@ -109,6 +111,11 @@ def handleMessage(msg):
     payload = create_payload(session['user_id'], msg)
     print(payload)
     print('Message: ' + msg)
+    if channel_messages[session['room']]:
+        channel_messages[session['room']].append(payload)
+    else:
+        channel_messages[session['room']] = [payload]
+    print(channel_messages)
     send(payload, json=True, broadcast=True)
 
 @socketio.on('join', namespace='/chat')

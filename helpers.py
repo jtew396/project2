@@ -2,6 +2,7 @@ import json
 
 from flask import redirect, render_template, request, session
 from functools import wraps
+from datetime import datetime
 
 def login_required(f):
     """
@@ -18,7 +19,8 @@ def login_required(f):
 def create_payload(user_id, msg):
     dict = {
         'user_id': user_id,
-        'msg': msg
+        'msg': msg,
+        'timestamp': datetime.now().strftime("%m/%d/%y %H:%M:%S")
     }
     payload = json.dumps(dict)
     return payload
