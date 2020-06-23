@@ -7,9 +7,16 @@
         <div class="col">
             <div class="list-group">
                 <a class="list-group-item list-group-item-action active text-white" id="channels_header">Flack Channels</a>
-                {% for flack_channel in flack_channels %}
-                    <a href="/channel/{{ flack_channel }}" class="list-group-item list-group-item-action">{{ flack_channel }}</a>
-                {% endfor %}
+                <form action="/chat" method="post">
+                    <div class="form-group">
+                        <select class="form-control" id="join_channel">
+                            {% for flack_channel in flack_channels %}
+                                <!-- <a id="join_channel" data="{{ flack_channel }}" href="/channel/{{ flack_channel }}" class="list-group-item list-group-item-action">{{ flack_channel }}</a> -->
+                                <!-- <input type="submit" id="join_channel" data="{{ flack_channel }}" class="list-group-item list-group-item-action" /> -->
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="col"></div>

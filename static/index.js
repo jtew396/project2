@@ -1,71 +1,77 @@
-// Template for creating a channel
-// const template = Handlebars.compile("<li>New Channel</li>");
-
-// Storing a list of channels
-const channels = []
-
-// Storing a list of users
-const users = []
-
-function FlackSettings(users, channels) {
-	return settings
-};
-
 $(document).ready(function() {
+	const chat = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+	chat.on('connect', function() {
+		// $('#join_channel').click(function () {
+		// 	var channel_name = $(this)[0].innerHTML;
+		// 	// console.log($(this)[0].innerHTML);
+		// 	console.log("We're trying to join the " + channel_name + " channel.");
+		// 	socket.emit('join', {'room': channel_name});
+		// });
+		socket.on('send_message', function(data) {
+			console.log('The user: ' + data['user_id']);
+			console.log('The message: ' + data['msg']);
+			$("#messages").append('<div class=\"alert alert-primary\" id=\"messageBox\"><div class=\"row\"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data['user_id'] + '</span> - 12:23 PM</div></div><div class=\"row\" id=\"message\">' + data['msg'] + '</div></div>');
+			console.log('Received message');
+		});
 
-	var socket = io.connect('http://127.0.0.1:5000');
+		socket.on('json', function(data) {
+			console.log('The user: ' + data['user_id']);
+			console.log('The message: ' + data['msg']);
+			$("#messages").append('<div class=\"alert alert-primary\" id=\"messageBox\"><div class=\"row\"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data['user_id'] + '</span> - 12:23 PM</div></div><div class=\"row\" id=\"message\">' + data['msg'] + '</div></div>');
+			console.log('Received message');
+		})
 
-	socket.on('connect', function() {
-		socket.send('User has connected!');
+		$('#sendbutton').on('click', function() {
+			console.log('We are trying to send a message and you pressed the button.');
+			console.log($('#myMessage').val());
+			socket.emit('send_message', $('#myMessage').val());
+			$('#myMessage').val('');
+		});
+
+		// socket.send('User has connected!');
+
 	});
 
-	// Have a new user create a display name
-	socket.on('my response', function(user_data) {
-		console.log(user_data);
-		$("#user").append('<li>'+user_data["display_name"]+' has joined Flack.</li>');
-		console.log('User has joined Flack.');
-	});
 
-	$('#create_display_name').on('click', function() {
-		console.log('So you clicked the button.')
-		socket.emit( 'my event', {
-			"display_name": $('#display_name').val()
-		} )
-		console.log($('#display_name').val(''));
-	});
-
-	$('#display_name').on('keypress', function(e) {
-		console.log('So you pressed enter.')
-		if(e.which == 13) {
-			socket.emit( 'my event', {
-				"display_name": $('#display_name').val()
-			} )
-			$('#display_name').val('');
-        }
-	});
-
-	socket.on('message', function(msg) {
-		$("#messages").append('<div class=\"alert alert-primary\" id=\"messageBox\"><div class=\"row\"><div class=\"float-left\"><span class=\"font-weight-bold\">user</span> - 12:23 PM</div></div><div class=\"row\" id=\"message\">' + msg + '</div></div>');
-		console.log('Received message');
-	});
-
-	$('#sendbutton').on('click', function() {
-		socket.send($('#myMessage').val());
-		$('#myMessage').val('');
-	});
-
-    $('#myMessage').on('keypress', function(e) {
-        if(e.which == 13) {
-            socket.send($('#myMessage').val());
-    		$('#myMessage').val('');
-        }
-    });
-
-	$('#joinChannelButton').on('click', function() {
-		var room = $(this).val();
-		console.log(room);
-		//socket.join(room);
-	});
+	// // Have a new user create a display name
+	// socket.on('my response', function(user_data) {
+	// 	console.log(user_data);
+	// 	$("#user").append('<li>'+user_data["display_name"]+' has joined Flack.</li>');
+	// 	console.log('User has joined Flack.');
+	// });
+	//
+	// $('#create_display_name').on('click', function() {
+	// 	console.log('So you clicked the button.')
+	// 	socket.emit( 'my event', {
+	// 		"display_name": $('#display_name').val()
+	// 	} )
+	// 	console.log($('#display_name').val(''));
+	// });
+	//
+	// $('#display_name').on('keypress', function(e) {
+	// 	console.log('So you pressed enter.')
+	// 	if(e.which == 13) {
+	// 		socket.emit( 'my event', {
+	// 			"display_name": $('#display_name').val()
+	// 		} )
+	// 		$('#display_name').val('');
+    //     }
+	// });
+	//
+	//
+	//
+    // $('#myMessage').on('keypress', function(e) {
+    //     if(e.which == 13) {
+    //         socket.send($('#myMessage').val());
+    // 		$('#myMessage').val('');
+    //     }
+    // });
+	//
+	// $('#joinChannelButton').on('click', function() {
+	// 	var room = $(this).val();
+	// 	console.log(room);
+	// 	//socket.join(room);
+	// });
 
 });
 

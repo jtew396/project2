@@ -5,5 +5,32 @@
 {% endblock %}
 
 {% block main %}
-    
+    <br>
+    <div class="row">
+        <div class="col">
+            <div class="card" id="channel" style="">
+                <div class="card-header" id="channel_header">
+                    <h3 class="text-white">{{ flack_channel }}</h3>
+                </div>
+                <div class="card-body overflow-auto" id="">
+                    <div id="messages"></div>
+                </div>
+                <div class="card-footer">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" class="form-control" id="myMessage">
+                                </div>
+                                <div class="col-1">
+                                    <button class="btn btn-primary" id="sendbutton">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

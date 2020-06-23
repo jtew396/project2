@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, jsonify, render_template, request, session, flash, redirect, url_for
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
-from helpers import login_required
+from helpers import login_required, create_payload
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(24)
@@ -25,7 +25,6 @@ def login():
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-
         # Ensure username was submitted
         if not request.form.get("displayname"):
             flash('Must provide display name.')
@@ -50,6 +49,7 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = displayname
+        session["room"] = 'Main'
 
         # Redirect user to home page
         return redirect("/")
@@ -66,7 +66,7 @@ def channels():
         print(flack_channels)
         return render_template("channels.html", flack_channels=flack_channels)
     else:
-
+        print(request.form)
         # Check if a channel name was provided
         if not request.form.get("channelname"):
             print('Must provide a channel name.')
@@ -82,60 +82,52 @@ def channels():
 
         return render_template("channels.html", flack_channels=flack_channels)
 
-@app.route('/channel/<channel_name>')
-def channel(channel_name):
-    if channel_name not in flack_channels:
-        return redirect(url_for('channels'))
-    return render_template("channel.html")
+@app.route('/chat', methods=["GET", "POST"])
+def chat():
+    if request.method == "GET":
+        return render_template("channels.html", flack_channels=flack_channels)
+    else:
+        # Check if a channel name was provided
+        if not request.form.get("channelname"):
+            print('Must provide a channel name.')
+            return redirect(url_for('channels'))
 
-# @socketio.on('connect')
-# @login_required
-# def connect_handler():
-#     if session.user_id:
-#         emit('my response',
-#             {'message': '{0} has joined'.format(session.user_id)},
-#             broadcast=True)
-#     else:
-#         return False
+        channel_name = request.form.get("channelname")
 
-# @socketio.on('message')
-# def handleMessage(msg):
-#     print('Message: ' + msg)
-#     send(msg, broadcast=True)
+        # Check if the channel exists in the flack channels
+        if channel_name not in flack_channels:
+            return redirect(url_for('channels'))
 
-# @socketio.on('my event')
-# def handle_my_custom_event(json):
-#     print(json)
-#     print('Display Name Created: ' + json["display_name"])
-#
-#     user_data = {
-#         "id": len(users) + 1,
-#         "display_name": json["display_name"]
-#     }
-#
-#     # Remember which user id corresponds to their display name
-#     session["user_id"] = user_data["id"]
-#
-#     # Append the user data to the users array
-#     users.append(user_data)
-#
-#     print('User ID: ' + str(session["user_id"]))
-#
-#     socketio.emit('my response', user_data, broadcoast=True)
+        # Make the channel the new room
+        session['room'] = request.form.get("channelname")
 
-@socketio.on('join')
-def on_join(data):
-    username = data['username']
-    room = data['room']
+        return render_template("chat.html", flack_channel=channel_name)
+
+@socketio.on('send_message', namespace='/chat')
+def handleMessage(msg):
+    # room = session['room']
+    payload = create_payload(session['user_id'], msg)
+    print(payload)
+    print('Message: ' + msg)
+    send(payload, json=True, broadcast=True)
+
+@socketio.on('join', namespace='/chat')
+def on_join():
+    username = session['user_id']
+    room = session['room']
     join_room(room)
-    send(username + ' has entered the room.', room=room)
+    msg = username + ' has entered the room.'
+    payload = create_payload(username, msg)
+    emit('send_message', payload, json=True, room=room)
 
-@socketio.on('leave')
-def on_leave(data):
-    username = data['username']
-    room = data['room']
+@socketio.on('leave', namespace='/chat')
+def on_leave():
+    username = session['user_id']
+    room = session['room']
     leave_room(room)
-    send(username + ' has left the room.', room=room)
+    msg = username + ' has left the room.'
+    payload = create_payload(username, msg)
+    emit('send_message', payload, json=True, room=room)
 
 
 if __name__ == '__main__':

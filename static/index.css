@@ -23,7 +23,7 @@ nav .navbar-brand .green
 }
 nav .navbar-brand .purple
 {
-    color: #4d1979
+    color: #4d1979;
 }
 
 main .form-control
@@ -70,6 +70,12 @@ main
 }
 
 #channels_header
+{
+    background-color: #4d1979;
+    border-color: #4d1979;
+}
+
+#channel_header
 {
     background-color: #4d1979;
     border-color: #4d1979;

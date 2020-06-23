@@ -1,3 +1,5 @@
+import json
+
 from flask import redirect, render_template, request, session
 from functools import wraps
 
@@ -12,3 +14,11 @@ def login_required(f):
             return redirect("/login")
         return f(*args, **kwargs)
     return decorated_function
+
+def create_payload(user_id, msg):
+    dict = {
+        'user_id': user_id,
+        'msg': msg
+    }
+    payload = json.dumps(dict)
+    return payload
