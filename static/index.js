@@ -1,43 +1,52 @@
 $(document).ready(function() {
 	const chat = io.connect('http://' + document.domain + ':' + location.port + '/chat');
 	chat.on('connect', function() {
-		// $('#join_channel').click(function () {
-		// 	var channel_name = $(this)[0].innerHTML;
-		// 	// console.log($(this)[0].innerHTML);
-		// 	console.log("We're trying to join the " + channel_name + " channel.");
-		// 	socket.emit('join', {'room': channel_name});
-		// });
+		chat.emit('join');
+
 		chat.on('send_message', function(data) {
-			console.log(data);
-			console.log('The user: ' + data['user_id']);
-			console.log('The message: ' + data['msg']);
-			$("#messages").append('<div class=\"alert alert-primary\" id=\"messageBox\"><div class=\"row\"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data['user_id'] + '</span> - 12:23 PM</div></div><div class=\"row\" id=\"message\">' + data['msg'] + '</div></div>');
-			console.log('Received message');
+			// $("#messages").append('<div class=\"alert alert-primary\" id=\"' + data.user_id + data.timestamp + '\"><div class=\"row\"><div class="col"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data.user_id + '</span> - ' + data.timestamp + '</div></div><div class=\"co\"><button type=\"button\" class=\"close\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div></div><div class=\"row\" id=\"message\"><div class=\"col\"><div class=\"float-left\">' + data.msg + '</div></div></div></div>');
+			$("#messages").append('<div class=\"alert alert-primary\" id=\"' + data.message_id + '\"><div class=\"row\"><div class=\"col\"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data.user_id + '</span> - ' + data.timestamp + '</div></div><div class=\"col\"><button type=\"button\" id=\"deleteMessage\" data-value=\"' + data.message_id + '\" class=\"close\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div></div><div class=\"row\" id=\"message\"><div class=\"col\"><div class=\"float-left\">' + data.msg + '</div></div></div></div>');
+			// if (data.socket_id == chat.id) {
+			// 	$("#messages").append('<div class=\"alert alert-primary\" id=\"messageBox\"><div class=\"row\"><div class="col"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data.user_id + '</span> - ' + data.timestamp + '</div></div><div class=\"co\"><button type=\"button\" class=\"close\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div></div><div class=\"row\" id=\"message\"><div class=\"col\"><div class=\"float-left\">' + data.msg + '</div></div></div></div>');
+			// } else {
+			// 	$("#messages").append('<div class=\"alert alert-secondary\" id=\"messageBox\"><div class=\"row\"><div class="col"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data.user_id + '</span> - ' + data.timestamp + '</div></div><div class=\"co\"></div></div><div class=\"row\" id=\"message\"><div class=\"col\"><div class=\"float-left\">' + data.msg + '</div></div></div></div>');
+			// };
 		});
 
-		chat.on('json', function(data) {
-			json = JSON.parse(data)
-			console.log('The user: ' + json["user_id"]);
-			console.log('The message: ' + json["msg"]);
-			$("#messages").append('<div class=\"alert alert-primary\" id=\"messageBox\"><div class=\"row\"><div class=\"float-left\"><span class=\"font-weight-bold\">' + json.user_id + '</span> - ' + json.timestamp + '</div></div><div class=\"row\" id=\"message\">' + json.msg + '</div></div>');
-			console.log('Received message');
-		})
+		chat.on('delete_message', function(data){
+			console.log(data.message_id);
+			$('#' + data.message_id).remove();
+		});
 
 		$('#sendbutton').on('click', function() {
 			console.log('We are trying to send a message and you pressed the button.');
 			console.log($('#myMessage').val());
-			chat.emit('send_message', $('#myMessage').val());
+			var data = {
+				// socket_id: chat.id,
+				msg: $('#myMessage').val()
+			};
+			chat.emit('send_message', data);
 			$('#myMessage').val('');
 		});
 
 		$('#myMessage').on('keypress', function(e) {
 			if(e.which == 13 && $('#myMessage').val() != '') {
-				chat.emit('send_message', $('#myMessage').val());
+				var data = {
+					// socket_id: chat.id,
+					msg: $('#myMessage').val()
+				};
+				chat.emit('send_message', data);
 				$('#myMessage').val('');
 			};
-		})
+		});
 
-		// socket.send('User has connected!');
+		$('#deleteMessage').on('click', function() {
+			console.log('We have clicked the x');
+			var data = {
+				message_id: $(this).data('value'),
+			};
+			chat.emit('delete_message', data);
+		});
 
 	});
 

@@ -15,16 +15,46 @@
                 <div class="card-body overflow-auto" id="">
                     <div id="messages">
                         {% for message in channel_messages %}
-                            <div class="alert alert-primary" id="messageBox">
-                                <div class="row">
-                                    <div class="float-left">
-                                        <span class="font-weight-bold">{{message["user_id"] }}</span>{{ message["timestamp"] }}
+                            {% if message["user_id"] == session["user_id"] %}
+                                <div class="alert alert-primary" id="{{ message["message_id"] }}">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="float-left">
+                                                <span class="font-weight-bold">{{message["user_id"] }}</span> - {{ message["timestamp"] }}
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <button type="button" id="deleteMessage" data-value="{{ message["message_id"] }}" class="close" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="message">
+                                        <div class="col">
+                                            <div class="float-left">
+                                                {{ message["msg"] }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row" id="message">
-                                    {{ message["msg"] }}
+                            {% else %}
+                                <div class="alert alert-secondary" id="{{ message["message_id"] }}">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="float-left">
+                                                <span class="font-weight-bold">{{message["user_id"] }}</span> - {{ message["timestamp"] }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="message">
+                                        <div class="col">
+                                            <div class="float-left">
+                                                {{ message["msg"] }}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
                         {% endfor %}
                     </div>
                 </div>

@@ -15,7 +15,8 @@ channel_messages = {'Main': []}
 @app.route('/', methods=["GET", "POST"])
 @login_required
 def index():
-    return render_template("index.html", channels=channels)
+    channel_name = session['room']
+    return redirect(url_for('chat'))
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -80,7 +81,7 @@ def channels():
             return redirect(url_for('channels'))
         else:
             flack_channels.append(new_channel)
-
+            channel_messages[new_channel] = []
         return render_template("channels.html", flack_channels=flack_channels)
 
 @app.route('/chat', methods=["GET", "POST"])
@@ -88,7 +89,8 @@ def channels():
 def chat():
     if request.method == "GET":
         channel_name = session['room']
-        return render_template("chat.html", flack_channel=channel_name)
+        print(channel_messages[channel_name])
+        return render_template("chat.html", flack_channel=channel_name, channel_messages=channel_messages[channel_name])
     else:
         # Check if a channel name was provided
         if not request.form.get("join_channel"):
@@ -106,35 +108,59 @@ def chat():
         return render_template("chat.html", flack_channel=channel_name, channel_messages=channel_messages[channel_name])
 
 @socketio.on('send_message', namespace='/chat')
-def handleMessage(msg):
-    # room = session['room']
-    payload = create_payload(session['user_id'], msg)
-    print(payload)
-    print('Message: ' + msg)
+def handleMessage(data):
+    room = session['room']
+    payload = create_payload(session['user_id'], data)
+    # channel_messages[session['room']][payload['user_id'] + payload['timestamp']] = payload
     if channel_messages[session['room']]:
-        channel_messages[session['room']].append(payload)
+        channel_messages[session['room']][payload.user_id + payload.timestamp] = payload
     else:
         channel_messages[session['room']] = [payload]
+    emit('send_message', payload, json=True, broadcast=True, room=room)
+
+@socketio.on('delete_message', namespace='/chat')
+def handleDelete(data):
+    room = session['room']
+    print('We have made it to delete.')
+    print(data)
     print(channel_messages)
-    send(payload, json=True, broadcast=True)
+    # message = channel_messages[session["room"]][data['message_id']]
+    # if session["user_id"] == message.user_id:
+    #     channel_messages[session["room"]].pop(data['message_id'])
+    messages = channel_messages[session["room"]]
+    temp = []
+    payload = data
+    for i in messages:
+        if i['message_id'] == data['message_id'] and i['user_id'] == session['user_id']:
+            payload = i
+        else:
+            temp.append(i)
+    channel_messages[session["room"]] = temp
+    # channel_messages[session["room"]] = [i for i in channel_messages[session["room"]] if not i['message_id'] == data.message_id and i.user_id == session["user_id"]]
+    emit('delete_message', payload, json=True, broadcast=True, room=room)
+
 
 @socketio.on('join', namespace='/chat')
 def on_join():
     username = session['user_id']
     room = session['room']
     join_room(room)
-    msg = username + ' has entered the room.'
-    payload = create_payload(username, msg)
-    emit('send_message', payload, json=True, room=room)
+    data = {
+        'msg': username + ' has entered the channel.'
+    }
+    payload = create_payload(username, data)
+    emit('send_message', payload, json=True, broadcast=True, room=room)
 
 @socketio.on('leave', namespace='/chat')
 def on_leave():
     username = session['user_id']
     room = session['room']
     leave_room(room)
-    msg = username + ' has left the room.'
-    payload = create_payload(username, msg)
-    emit('send_message', payload, json=True, room=room)
+    data = {
+        'msg': username + ' has left the channel.'
+    }
+    payload = create_payload(username, data)
+    emit('send_message', payload, json=True, broadcast=True, room=room)
 
 
 if __name__ == '__main__':
