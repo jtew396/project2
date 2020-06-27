@@ -5,7 +5,7 @@ $(document).ready(function() {
 
 		chat.on('send_message', function(data) {
 			// $("#messages").append('<div class=\"alert alert-primary\" id=\"' + data.user_id + data.timestamp + '\"><div class=\"row\"><div class="col"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data.user_id + '</span> - ' + data.timestamp + '</div></div><div class=\"co\"><button type=\"button\" class=\"close\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div></div><div class=\"row\" id=\"message\"><div class=\"col\"><div class=\"float-left\">' + data.msg + '</div></div></div></div>');
-			$("#messages").append('<div class=\"alert alert-primary\" id=\"' + data.message_id + '\"><div class=\"row\"><div class=\"col\"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data.user_id + '</span> - ' + data.timestamp + '</div></div><div class=\"col\"><button type=\"button\" id=\"deleteMessage\" data-value=\"' + data.message_id + '\" class=\"close\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div></div><div class=\"row\" id=\"message\"><div class=\"col\"><div class=\"float-left\">' + data.msg + '</div></div></div></div>');
+			$("#messages").append('<div class=\"alert alert-primary\" id=\"' + data.message_id + '\"><div class=\"row\"><div class=\"col\"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data.user_id + '</span> - ' + data.timestamp + '</div></div><div class=\"col\"><button type=\"button\" id=\"deleteMessage\" data-message_id=\"' + data.message_id + '\" data-user_id=\"' + data.user_id + '\" class=\"close\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div></div><div class=\"row\" id=\"message\"><div class=\"col\"><div class=\"float-left\">' + data.msg + '</div></div></div></div>');
 			// if (data.socket_id == chat.id) {
 			// 	$("#messages").append('<div class=\"alert alert-primary\" id=\"messageBox\"><div class=\"row\"><div class="col"><div class=\"float-left\"><span class=\"font-weight-bold\">' + data.user_id + '</span> - ' + data.timestamp + '</div></div><div class=\"co\"><button type=\"button\" class=\"close\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div></div><div class=\"row\" id=\"message\"><div class=\"col\"><div class=\"float-left\">' + data.msg + '</div></div></div></div>');
 			// } else {
@@ -15,7 +15,9 @@ $(document).ready(function() {
 
 		chat.on('delete_message', function(data){
 			console.log(data.message_id);
-			$('#' + data.message_id).remove();
+			if (data['delete'] == true ){
+				$('#' + data.message_id).remove();
+			};
 		});
 
 		$('#sendbutton').on('click', function() {
@@ -40,13 +42,24 @@ $(document).ready(function() {
 			};
 		});
 
-		$('#deleteMessage').on('click', function() {
-			console.log('We have clicked the x');
+		$(document).on('click', '#deleteMessage', function() {
+			// console.log('We have clicked the x');
 			var data = {
-				message_id: $(this).data('value'),
+				message_id: $(this).data('message_id'),
+				user_id: $(this).data('user_id')
 			};
+			// console.log(data);
 			chat.emit('delete_message', data);
 		});
+
+		// $('#deleteMessage').on('click', function() {
+		// 	console.log('We have clicked the x');
+		// 	var data = {
+		// 		message_id: $(this).data('value'),
+		// 		user_id: $(this).data('user_id')
+		// 	};
+		// 	chat.emit('delete_message', data);
+		// });
 
 	});
 

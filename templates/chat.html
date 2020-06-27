@@ -15,7 +15,28 @@
                 <div class="card-body overflow-auto" id="">
                     <div id="messages">
                         {% for message in channel_messages %}
-                            {% if message["user_id"] == session["user_id"] %}
+                            <div class="alert alert-primary" id="{{ message["message_id"] }}">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="float-left">
+                                            <span class="font-weight-bold">{{message["user_id"] }}</span> - {{ message["timestamp"] }}
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" id="deleteMessage" data-message_id="{{ message["message_id"] }}" data-user_id="{{ message["user_id"] }}" class="close" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row" id="message">
+                                    <div class="col">
+                                        <div class="float-left">
+                                            {{ message["msg"] }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- {% if message["user_id"] == session["user_id"] %}
                                 <div class="alert alert-primary" id="{{ message["message_id"] }}">
                                     <div class="row">
                                         <div class="col">
@@ -24,7 +45,7 @@
                                             </div>
                                         </div>
                                         <div class="col">
-                                            <button type="button" id="deleteMessage" data-value="{{ message["message_id"] }}" class="close" aria-label="Close">
+                                            <button type="button" id="deleteMessage" data-message_id="{{ message["message_id"] }}" data-user_id="{{ message["user_id"] }}" class="close" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
@@ -38,7 +59,7 @@
                                     </div>
                                 </div>
                             {% else %}
-                                <div class="alert alert-secondary" id="{{ message["message_id"] }}">
+                                <div class="alert alert-primary" id="{{ message["message_id"] }}">
                                     <div class="row">
                                         <div class="col">
                                             <div class="float-left">
@@ -54,7 +75,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            {% endif %}
+                            {% endif %} -->
                         {% endfor %}
                     </div>
                 </div>

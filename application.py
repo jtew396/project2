@@ -113,7 +113,9 @@ def handleMessage(data):
     payload = create_payload(session['user_id'], data)
     # channel_messages[session['room']][payload['user_id'] + payload['timestamp']] = payload
     if channel_messages[session['room']]:
-        channel_messages[session['room']][payload.user_id + payload.timestamp] = payload
+        if len(channel_messages[session['room']]) >= 100:
+            channel_messages[session['room']].pop(0)
+        channel_messages[session['room']].append(payload)
     else:
         channel_messages[session['room']] = [payload]
     emit('send_message', payload, json=True, broadcast=True, room=room)
@@ -130,9 +132,14 @@ def handleDelete(data):
     messages = channel_messages[session["room"]]
     temp = []
     payload = data
+    if data['user_id'] == session['user_id']:
+        payload['delete'] = True
+    else:
+        payload['delete'] = False
     for i in messages:
         if i['message_id'] == data['message_id'] and i['user_id'] == session['user_id']:
             payload = i
+            payload['delete'] = True
         else:
             temp.append(i)
     channel_messages[session["room"]] = temp
